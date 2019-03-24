@@ -264,7 +264,7 @@ class FirstLetterSegmentation:
 
 
 decideLettersCount = FirstLetterSegmentation(str(sys.argv[1]), str(sys.argv[2]), os, random)
-# decideLettersCount.individualWordCountPerGender()
-# decideLettersCount.generateSubdividedDataset()
 
-decideLettersCount.devideTrainingTestData(60)
+decideLettersCount.individualWordCountPerGender()
+decideLettersCount.generateSubdividedDataset()
+decideLettersCount.devideTrainingTestData(75)
