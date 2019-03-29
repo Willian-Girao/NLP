@@ -6,10 +6,10 @@ class Crhomosome:
     def __init__(self, label, random):
         self.random = random
         self.label = label
-        self.charset_aux = self.charsetInitializer()
-        self.charset = []
-        self.correct_avg = 0.0
-        self.wrong_avg = 0.0
+        self.charset = self.charsetInitializer()
+        self.charset_aux = []
+        self.correct = 0
+        self.wrong = 0
         self.generation_counter = 0
         self.certainty = 0.0
         self.previous_certainty = 0.0
@@ -28,55 +28,48 @@ class Crhomosome:
     def charsetInitializer(self):
         charset = []
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        for i in range(100):
+        for i in range(300):
             rand = self.random.uniform(0, 1)
             aux = alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)]
             if rand >= 0.5:
                 aux = self.normalize(alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)])
-
-            charset.append(aux)
+            chr = {
+            "pattern": aux,
+            "frequency": 0.0
+            }
+            charset.append(chr)
 
         return charset
 
-    def updateChromosome(self, name, label):
-        updated_charset = []
-        current_charset = self.charset
-        for chr in range(len(self.charset_aux)):
-            if (self.charset_aux[chr] in name):
-                updated_charset.append(self.charset_aux[chr])
-        self.charset = updated_charset + current_charset
-
-        completing_list = []
-
-        for i in range((99 - len(self.charset))+1):
-            alphabet = 'abcdefghijklmnopqrstuvwxyz'
-            aux = alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)]
-            if self.random.uniform(0, 1) >= 0.5:
-                aux = self.normalize(alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)])
-            completing_list.append(aux)
-
-        self.charset_aux = []
-        self.charset_aux = self.charset + completing_list
-
-        cleaned_charset = []
-        for pattern in self.charset:
-            if not(pattern in cleaned_charset):
-                cleaned_charset.append(pattern)
-
-        self.charset = []
-        self.charset = cleaned_charset
-
-        self.certainty = len(cleaned_charset)
-
+    def searchPatterns(self, name, label):
+        for chr in range(len(self.charset)):
+            if (self.charset[chr]['pattern'] in name):
+                self.charset[chr]['frequency'] += 1.0
         return
 
-    def printCharsetAux(self):
-        print(self.charset_aux)
+    def calculateAvgFrequencies(self, sample_size):
+        for i in range(0, len(self.charset)):
+            self.charset[i]['frequency'] = self.charset[i]['frequency'] / sample_size
         return
 
     def printCharset(self):
-        print(self.charset)
+        for chr in self.charset:
+            if (chr['frequency'] > 0.0):
+                print(str(chr))
         return
+
+    def printCharsetAux(self):
+        for chr in self.charset_aux:
+            if (chr['frequency'] > 0.0):
+                print(str(chr))
+        return
+
+    def getCharsetAuxLength(self, defined_length):
+        cur_length = len(self.charset_aux)
+        if cur_length == defined_length:
+            self.charset = self.charset_aux
+            self.charset_aux = []
+        return cur_length
 
     def getCertainty(self):
         return self.certainty
@@ -85,45 +78,75 @@ class Crhomosome:
         total = (self.certainty / sample_size) / generation
         self.certainty += total
 
+    def updateCharset(self):
+        chr_best = {
+        "pattern": self.charset[0]['pattern'],
+        "frequency": self.charset[0]['frequency']
+        }
+
+        for i in range(1, len(self.charset)):
+            if self.charset[i]['frequency'] > chr_best['frequency']:
+                chr_best = self.charset[i]
+
+        right_frequency = False
+
+        if chr_best['frequency'] > 0.0:
+            right_frequency = True
+
+        if right_frequency:
+            not_present = True
+            for chr in self.charset_aux:
+                if chr['pattern'] == chr_best['pattern']:
+                    not_present = False
+            if not_present:
+                self.charset_aux.append(chr_best)
+
+        self.charset = []
+        self.charset = self.charsetInitializer()
+
+        return
+
+    # def predict(self, name):
+    #     matches_count = 0
+    #     frequency_sum = 0.0
+    #     for chr in self.charset:
+    #         frequency_sum += chr['frequency']
+    #         if (chr['pattern'] in name):
+    #             matches_count += 1
+    #
+    #     matches_avg = frequency_sum / len(self.charset)
+    #     if matches_avg > 0.5:
+    #         self.correct += 1
+    #         print('\nlabel: ' + self.label)
+    #         print('\ncertainty: ' + str(matches_avg))
+    #         return self.label
+    #     else:
+    #         self.wrong += 1
+    #         print('female')
 
 
 a = Crhomosome('male', random)
-b = Crhomosome('male', random)
 
-a.updateChromosome('mark', 'male')
-a.updateChromosome('john', 'male')
-a.updateChromosome('jonathan', 'male')
-a.updateChromosome('aaron', 'male')
-a.updateChromosome('rony', 'male')
+while a.getCharsetAuxLength(3) < 3:
+    a.searchPatterns('mark', 'male')
+    a.searchPatterns('john', 'male')
+    a.searchPatterns('jonathan', 'male')
+    a.searchPatterns('aaron', 'male')
+    a.searchPatterns('rony', 'male')
+    a.searchPatterns('johnson', 'male')
+    a.searchPatterns('jonny', 'male')
 
-b.updateChromosome('mark', 'male')
-b.updateChromosome('john', 'male')
-b.updateChromosome('jonathan', 'male')
-b.updateChromosome('aaron', 'male')
-b.updateChromosome('rony', 'male')
-
-a.printCharset()
-b.printCharset()
-
-print(a.getCertainty())
-print(b.getCertainty())
-
-a.updateChromosome('mark', 'male')
-a.updateChromosome('john', 'male')
-a.updateChromosome('jonathan', 'male')
-a.updateChromosome('aaron', 'male')
-a.updateChromosome('rony', 'male')
-
-b.updateChromosome('mark', 'male')
-b.updateChromosome('john', 'male')
-b.updateChromosome('jonathan', 'male')
-b.updateChromosome('aaron', 'male')
-b.updateChromosome('rony', 'male')
+    a.calculateAvgFrequencies(5)
+    a.updateCharset()
 
 a.printCharset()
-b.printCharset()
+# a.predict('jonathan')
+#
+#
+# a.printCharset()
+# b.printCharset()
+#
+# print(a.getCertainty())
 
-print(a.getCertainty())
-print(b.getCertainty())
 
 # After here ill get the best half ->
