@@ -1,13 +1,18 @@
 #!/usr/bin/python
 
 class Filterset:
-    def __init__(self, label, random):
+    def __init__(self, label, random, size):
         self.random = random
         self.label = label
-        self.charset = self.charsetInitializer()
+        self.size = size
+        self.charset = self.charsetInitializer(self.size)
         self.charset_aux = []
         self.generation_counter = 0
-        self.relative_frequency = 0.0
+        self.fitness = 0.0
+
+    # Gets the filterset relative frequency.
+    def getFitness(self):
+        return self.fitness
 
     # Chages the start or and of a patern with length 3 by a vowel with 50% probability.
     # @pattern - string of characters of length 3.
@@ -23,10 +28,10 @@ class Filterset:
         return
 
     # Generates a random list of random alphabet characters.
-    def charsetInitializer(self):
+    def charsetInitializer(self, size):
         charset = []
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        for i in range(300):
+        for i in range(size):
             rand = self.random.uniform(0, 1)
             aux = alphabet[self.random.randint(0,25)] + alphabet[self.random.randint(0,25)]
             if rand >= 0.5:
@@ -42,7 +47,7 @@ class Filterset:
 
     # Checks whether a given pattern is found within a string.
     # @name - string where the pattern is to be searched for.
-    def searchPatterns(self, name):
+    def countPatternsMatch(self, name):
         for chr in range(len(self.charset)):
             if (self.charset[chr]['pattern'] in name):
                 self.charset[chr]['frequency'] += 1.0
@@ -50,23 +55,21 @@ class Filterset:
 
     # Calculates the average frequency each pattern within the charset was matched during processing.
     # @sample_size - number of processed test intances.
-    def calculateAvgFrequencies(self, sample_size):
+    def calculatePattenrsAvgFrequencies(self, sample_size):
         for i in range(0, len(self.charset)):
             self.charset[i]['frequency'] = self.charset[i]['frequency'] / sample_size
         return
 
     # Prins patterns within charset with non-zero frequency.
     def printCharset(self):
-        for chr in self.charset:
-            if (chr['frequency'] > 0.0):
-                print(str(chr))
+        for chr in range(len(self.charset)):
+            print(self.charset[chr])
         return
 
     # Prins patterns within charset_aux with non-zero frequency.
     def printCharsetAux(self):
         for chr in self.charset_aux:
-            if (chr['frequency'] > 0.0):
-                print(str(chr))
+            print(str(chr))
         return
 
     # Makes charset equals to charset_aux when the number of wanted patterns is met.
@@ -85,7 +88,7 @@ class Filterset:
         return self.relative_frequency
 
     # Increases charset length by adding the current best frequency within charset_aux.
-    def updateCharset(self):
+    def selectBestPattern(self):
         chr_best = {
         "pattern": self.charset[0]['pattern'],
         "frequency": self.charset[0]['frequency']
@@ -109,14 +112,14 @@ class Filterset:
                 self.charset_aux.append(chr_best)
 
         self.charset = []
-        self.charset = self.charsetInitializer()
+        self.charset = self.charsetInitializer(self.size)
 
         return
 
     # Updates the filter's relative frequency.
-    def updateRelativeFrequency(self):
+    def updateFitness(self):
         frequency_sum = 0
         for pattern in self.charset:
             frequency_sum += pattern['frequency']
-        self.relative_frequency = frequency_sum / len(self.charset)
-        return self.relative_frequency
+        self.fitness = frequency_sum / len(self.charset)
+        return self.fitness
