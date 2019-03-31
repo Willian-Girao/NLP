@@ -10,6 +10,17 @@ class Filterset:
         self.generation_counter = 0
         self.fitness = 0.0
 
+    # Returns a single patterns within charset.
+    def getSinglePattern(self, index):
+        return self.charset[index]
+
+    # Resets the current charset.
+    # @new_charset - new list of patterns.
+    def hardresetCharset(self, new_charset):
+        self.charset = []
+        self.charset = new_charset
+        return
+
     # Gets the filterset relative frequency.
     def getFitness(self):
         return self.fitness
