@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import random, time
-from filter_class import Filterset
 
 class Population:
     def __init__(self, size, filterset, alpha, beta, generations, class_label):
@@ -106,20 +105,3 @@ class Population:
             self.selectCombineAndComplete()
         filters = self.returnFilters()
         return filters
-
-def main():
-    male_names_list = []
-    input = open('male_dataset_03.txt', 'r')
-    for name in input:
-        male_names_list.append((name.rstrip()).lower())
-
-    # Population(size_of_pop, Filters_class, charset_length, elite_size, number_of_generations)
-    pop = Population(100, Filterset, 12, 40, 1, 'male')
-    pop.findOptimalFilters(male_names_list)
-
-if __name__ == '__main__':
-    start = time.time()
-    main()
-    end = time.time()
-    print("Execution time (s): ", end = "")
-    print(end - start)

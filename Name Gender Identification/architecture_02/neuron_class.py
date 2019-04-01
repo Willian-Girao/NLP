@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 import random, time
-from math import e
-from evolve_filters import Population
 
 class Neuron:
     def __init__(self, class_1_filter, class_2_filter, class_1_label, class_2_label):
