@@ -10,6 +10,15 @@ class Filterset:
         self.generation_counter = 0
         self.fitness = 0.0
 
+    # Clears the current frequency.
+    def clearFrequency(self):
+        for i in self.charset:
+            i['frequency'] = 0.0
+
+    # Returns the current charset.
+    def retrieveCharset(self):
+        return self.charset
+
     # Returns a single patterns within charset.
     def getSinglePattern(self, index):
         return self.charset[index]

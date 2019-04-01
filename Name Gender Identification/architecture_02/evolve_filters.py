@@ -4,12 +4,13 @@ import random, time
 from filter_class import Filterset
 
 class Population:
-    def __init__(self, size, filterset, alpha, beta, generations):
+    def __init__(self, size, filterset, alpha, beta, generations, class_label):
         self.size = size
         self.filterset = filterset
         self.num_of_wanted_patterns = alpha
         self.elit_size = beta
         self.generations = generations
+        self.class_label = class_label
         self.P = self.initializePopulation()
 
     # Initializes the population filters randomly.
@@ -21,6 +22,7 @@ class Population:
         return population
 
     # Finds the position the filter should be within the population based on its fintess.
+    # @curr_index - index of the filter within the population to be put in the right place.
     def sortFilters(self, curr_index):
         for i in range(len(self.P)):
             if (self.P[curr_index].getFitness()) > (self.P[i].getFitness()):
@@ -29,6 +31,7 @@ class Population:
                 self.P[curr_index] = save_temp
 
     # Go through the data and updates each p's charset in P.
+    # @names_list - list containing all the names to be processed.
     def consumeNames(self, names_list):
         for i in range(len(self.P)):
             while self.P[i].getCharsetAuxLength(self.num_of_wanted_patterns):
@@ -45,6 +48,9 @@ class Population:
         for filter in self.P:
             print(filter.getFitness())
 
+    # Combines two filter's charset to create a single one with their best elements.
+    # @a - filter 1
+    # @b - filter 2
     def combineBestPatterns(self, a, b):
         best_patterns = []
         for i in range(self.num_of_wanted_patterns):
@@ -82,21 +88,24 @@ class Population:
 
         return
 
-    def printBest(self):
+    # Returns 10% of the elit solutions found at the end of the process.
+    def returnFilters(self):
+        output = open('male_filters.txt', 'w+')
         best_filters = []
-        for i in range(self.elit_size):
-            best_filters.append(self.P[i])
+        for i in range(int(self.elit_size/10)):
+            self.P[i].clearFrequency()
+            best_filters.append(self.P[i].retrieveCharset())
+            output.write(str(self.P[i].retrieveCharset()) + "\n")
 
-        for filter in best_filters:
-            print(filter.getFitness())
+        return best_filters
 
+    # Performs the evolutionary process to find filters.
     def findOptimalFilters(self, male_names_list):
         for i in range(self.generations):
-            print("Generation " + str(i))
             self.consumeNames(male_names_list)
             self.selectCombineAndComplete()
-        self.printBest()
-        return
+        filters = self.returnFilters()
+        return filters
 
 def main():
     male_names_list = []
@@ -104,8 +113,8 @@ def main():
     for name in input:
         male_names_list.append((name.rstrip()).lower())
 
-    # Population(size_of_pop, Filters class, charset_length, elite_size, number_of_generations)
-    pop = Population(100, Filterset, 9, 40, 100)
+    # Population(size_of_pop, Filters_class, charset_length, elite_size, number_of_generations)
+    pop = Population(100, Filterset, 12, 40, 1, 'male')
     pop.findOptimalFilters(male_names_list)
 
 if __name__ == '__main__':
