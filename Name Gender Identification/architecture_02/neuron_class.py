@@ -36,3 +36,12 @@ class Neuron:
             self.predicted_label = self.class_1_label
         else:
             self.predicted_label = self.class_2_label
+
+    def printLabels(self):
+        print("Male filter")
+        for filter in self.class_1_filter:
+            print(filter)
+
+        print("Female filter")
+        for filter in self.class_2_filter:
+            print(filter)

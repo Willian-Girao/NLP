@@ -16,7 +16,7 @@ class Population:
     def initializePopulation(self):
         population = []
         for i in range(self.size):
-            a = self.filterset('male', random, self.num_of_wanted_patterns)
+            a = self.filterset(self.class_label, random, self.num_of_wanted_patterns)
             population.append(a)
         return population
 
@@ -61,7 +61,7 @@ class Population:
             else:
                 best_patterns.append(b_pattern)
 
-        n = self.filterset('male', random, self.num_of_wanted_patterns)
+        n = self.filterset(self.class_label, random, self.num_of_wanted_patterns)
         n.hardresetCharset(best_patterns)
         n.updateFitness()
         self.P.append(n)
@@ -82,14 +82,14 @@ class Population:
             self.combineBestPatterns(self.P[i], self.P[i+1])
 
         for i in range((self.size - len(self.P))):
-            a = self.filterset('male', random, self.num_of_wanted_patterns)
+            a = self.filterset(self.class_label, random, self.num_of_wanted_patterns)
             self.P.append(a)
 
         return
 
     # Returns 10% of the elit solutions found at the end of the process.
     def returnFilters(self):
-        output = open('male_filters.txt', 'w+')
+        output = open((self.class_label + '_filters.txt'), 'w+')
         best_filters = []
         for i in range(int(self.elit_size/10)):
             self.P[i].clearFrequency()

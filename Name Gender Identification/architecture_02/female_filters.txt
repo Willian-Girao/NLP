@@ -1,0 +1,4 @@
+[{'pattern': 'an', 'frequency': 0.0}, {'pattern': 'im', 'frequency': 0.0}, {'pattern': 'er', 'frequency': 0.0}, {'pattern': 'th', 'frequency': 0.0}, {'pattern': 'br', 'frequency': 0.0}, {'pattern': 'nn', 'frequency': 0.0}]
+[{'pattern': 'an', 'frequency': 0.0}, {'pattern': 'me', 'frequency': 0.0}, {'pattern': 'se', 'frequency': 0.0}, {'pattern': 'ie', 'frequency': 0.0}, {'pattern': 'mi', 'frequency': 0.0}, {'pattern': 'fa', 'frequency': 0.0}]
+[{'pattern': 'an', 'frequency': 0.0}, {'pattern': 'ia', 'frequency': 0.0}, {'pattern': 'op', 'frequency': 0.0}, {'pattern': 'sh', 'frequency': 0.0}, {'pattern': 'co', 'frequency': 0.0}, {'pattern': 'hl', 'frequency': 0.0}]
+[{'pattern': 'an', 'frequency': 0.0}, {'pattern': 'na', 'frequency': 0.0}, {'pattern': 'wa', 'frequency': 0.0}, {'pattern': 'ti', 'frequency': 0.0}, {'pattern': 'lli', 'frequency': 0.0}, {'pattern': 'mu', 'frequency': 0.0}]
