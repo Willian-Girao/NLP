@@ -23,14 +23,14 @@ class Layer:
     def maleBuildFilters(self):
         print("Optimizing male filters...")
         # Population(size_of_pop, Filters_class, charset_length, elite_size, number_of_generations, label)
-        pop = self.population(50, self.filterset, self.charset_length, (self.neurons_num * 10), 10, 'male')
+        pop = self.population(100, self.filterset, self.charset_length, (self.neurons_num * 10), 50, 'male')
         filter = pop.findOptimalFilters(self.male_names_list)
         return filter
 
     def femaleBuildFilters(self):
         print("Optimizing female filters...")
         # Population(size_of_pop, Filters_class, charset_length, elite_size, number_of_generations, label)
-        pop = self.population(50, self.filterset, self.charset_length, (self.neurons_num * 10), 10, 'female')
+        pop = self.population(100, self.filterset, self.charset_length, (self.neurons_num * 10), 50, 'female')
         filter = pop.findOptimalFilters(self.female_names_list)
         return filter
 
@@ -64,6 +64,27 @@ class Layer:
     def printSingleNeuron(self, index):
         self.neuron_array[index].printLabels()
 
+    def layerFoward(self, target):
+        for neuron in self.neuron_array:
+            neuron.predict(target)
+
+    def printNeuronsPredictions(self):
+        for neuron in self.neuron_array:
+            neuron.printPrediction()
+
+    def printAverageValues(self):
+        man = 0.0
+        women = 0.0
+        for neuron in self.neuron_array:
+            if neuron.getPredictedLabel() == "male":
+                man += neuron.getPredictedCertainty()
+            elif neuron.getPredictedLabel() == "female":
+                women += neuron.getPredictedCertainty()
+            else:
+                pass
+
+        print("Male: " + str(man) + " - Female: " + str(women))
+
 
 def main():
     male_names_list = []
@@ -77,10 +98,18 @@ def main():
     for name in female_inpute_file:
         female_names_list.append((name.rstrip()).lower())
 
-    layer_j = Layer(Population, Neuron, Filterset, male_names_list, female_names_list, 4, 6)
-    layer_j.printMaleFilters()
-    layer_j.printFemaleFilters()
-    layer_j.printSingleNeuron(0)
+    layer_j = Layer(Population, Neuron, Filterset, male_names_list, female_names_list, 8, 12)
+    # layer_j.printMaleFilters()
+    # layer_j.printFemaleFilters()
+    # layer_j.printSingleNeuron(0)
+    layer_j.layerFoward("suzan")
+    layer_j.printNeuronsPredictions()
+    print("\n")
+    layer_j.printAverageValues()
+    layer_j.layerFoward("rebecca")
+    layer_j.printNeuronsPredictions()
+    print("\n")
+    layer_j.printAverageValues()
 
 if __name__ == '__main__':
     start = time.time()

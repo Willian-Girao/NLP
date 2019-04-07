@@ -15,6 +15,7 @@ class Neuron:
     # Calculates the averge matchs in 'target' using 'class_filter'.
     # @class_filter - set of characters to be matched.
     # @target - string where the patterns will try to be matched against.
+    @staticmethod
     def classPrediction(class_filter, target):
         match_avg = 0.0
         for chr in class_filter:
@@ -25,8 +26,8 @@ class Neuron:
     # Decides which label should be given to the target sample to be classified.
     # @target - data to be classified.
     def predict(self, target):
-        class_1_certainty = classPrediction(self.class_1_filter, target)
-        class_2_certainty = classPrediction(self.class_2_filter, target)
+        class_1_certainty = self.classPrediction(self.class_1_filter, target)
+        class_2_certainty = self.classPrediction(self.class_2_filter, target)
 
         self.n_ij = max(class_1_certainty, class_2_certainty)
 
@@ -36,6 +37,15 @@ class Neuron:
             self.predicted_label = self.class_1_label
         else:
             self.predicted_label = self.class_2_label
+
+    def getPredictedLabel(self):
+        return self.predicted_label
+
+    def getPredictedCertainty(self):
+        return self.n_ij
+
+    def printPrediction(self):
+        print("Labebl: " + self.predicted_label + " -> certainty: " + str(self.n_ij))
 
     def printLabels(self):
         print("Male filter")
